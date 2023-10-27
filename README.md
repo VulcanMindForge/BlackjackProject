@@ -1,7 +1,5 @@
 # BlackjackProject
 
-# JetsProject
-
 # Hi 👋, I'm Jacob Stuart
 ### Programming student with Skill Distillery
 
