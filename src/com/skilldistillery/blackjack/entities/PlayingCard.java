@@ -12,6 +12,7 @@ public class PlayingCard {
 	public int getValue() {
 		return rank.getValue();
 	}
+	
 
 	@Override
 	public int hashCode() {
