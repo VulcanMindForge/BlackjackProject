@@ -14,17 +14,33 @@ public abstract class CardPlayer {
 		this.name = name;
 		this.bankroll = bankroll;
 	}
-
-	public int placeBet(int amtBet) {
-		bet = amtBet;
-		return amtBet;
+	
+	public String getName() {
+		return name;
 	}
 
-	public void collectWinnings(int amtFromPot) {
-		bankroll = bankroll + amtFromPot;
+	public int getBankroll() {
+		return bankroll;
 	}
 
-	public void betLost() {
+	public void placeBet(int amtBet) {
+		if (amtBet < bankroll) {
+			bet = amtBet;
+		} else {
+			System.out.println("Not enough left to bet that high.");
+		}
+	}
+	
+	public int getBet() {
+		return bet;
+	}
+
+	public void collectWinnings(int winnings) {
+		bankroll = bankroll + winnings;
+		bet = 0;
+	}
+
+	public void betLost(int loss) {
 		bankroll = bankroll - bet;
 		bet = 0;
 	}

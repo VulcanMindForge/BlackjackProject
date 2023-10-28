@@ -11,15 +11,15 @@ public class BlackjackHand extends PlayingCardHand {
 	public BlackjackHand() {
 		super();
 	}
-	
+
 	public boolean isBlackjack() {
 		boolean blackjack = false;
-		if (isHard() && getHandValue() == maxHandValue && hand.get(1).getValue() == 11) {
+		if (isAce() && getHandValue() == maxHandValue && hand.size() == 2) {
 			blackjack = true;
-		} 
+		}
 		return blackjack;
 	}
-	
+
 	public boolean isBust() {
 		boolean bust = false;
 		if (getHandValue() > maxHandValue) {
@@ -27,23 +27,27 @@ public class BlackjackHand extends PlayingCardHand {
 		}
 		return bust;
 	}
-	
-	public boolean isHard() {
-		boolean hardAce = true;
+
+	public boolean isAce() {
+		boolean isAce = false;
 		for (PlayingCard playingCard : hand) {
-			if (playingCard.getValue() == 11 && isBust()) {
-				hardAce = false;
+			if (playingCard.getValue() == 11) {
+				isAce = true;
 			}
 		}
-		return hardAce;
+		return isAce;
 	}
 
-	
 	@Override
 	public int getHandValue() {
 		int handValue = 0;
 		for (PlayingCard playingCard : hand) {
-			handValue = handValue + playingCard.getValue();
+			handValue = handValue + playingCard.getValue();	
+		}
+		if (handValue > maxHandValue) {
+			if (isAce()) {
+				handValue = handValue - 10;
+			}
 		}
 		return handValue;
 	}
@@ -52,13 +56,9 @@ public class BlackjackHand extends PlayingCardHand {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		for (PlayingCard playingCard : hand) {
-			builder.append(playingCard.toString());
+			builder.append(playingCard.toString() + "\n");
 		}
 		return builder.toString();
 	}
-	
-	
-	
-	
 
 }
