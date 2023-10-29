@@ -36,18 +36,19 @@ Created Blackjack Dealer and Player classes
 Set methods for each class and implemented.
 Implemented soft ace logic
 Implemented Blackjack hand logic
+Fixed loop
+Added method for getting list of players from file. If list isn't created from file, single player is added.
 
 # Next Steps
-Continue testing
-Noticing error in loop logic(Player can't leave)
-Implement method to create and remove players as needed up to 5.
 Implement method to veiw player name and bank.
-Comb over code and verify DRY.
 
 # Lessons learned or reinforced on this project
 When to use this() and this.
-Loop variables
-Calling methods of objectes initialized in a differant class
+Calling methods of objectes initialized in a class field
+ConcurrentModificationException error(first time seeing this one.)
+Collections.
+Class Encapsulation.
+
 
 # Lessons to research
 Other methods for storing initial variable value and recalling after the variable has been changed multiple times.

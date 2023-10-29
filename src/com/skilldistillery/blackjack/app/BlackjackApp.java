@@ -5,6 +5,10 @@ Version:
  */
 package com.skilldistillery.blackjack.app;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -15,7 +19,7 @@ import com.skilldistillery.blackjack.entities.BlackjackPlayer;
 import com.skilldistillery.blackjack.entities.CardPlayer;
 
 public class BlackjackApp {
-	private List<BlackjackPlayer> allPlayers = new ArrayList<>();
+	private List<BlackjackPlayer> allPlayers;
 	Scanner kb = new Scanner(System.in);
 
 	public static void main(String[] args) {
@@ -24,14 +28,14 @@ public class BlackjackApp {
 	}
 
 	private void run() {
-		BlackjackPlayer player1 = new BlackjackPlayer("Jacob", 1000);
-		BlackjackDealer dealer = new BlackjackDealer("Frank", 10000);
+		String fileName = "players.txt";
+		BlackjackDealer dealer = addDealer();
+		allPlayers = getPlayers(fileName);
 
-		allPlayers.add(player1);
 
 		greeting();
 
-		while (!isPlayer()) {
+		while (isPlayer()) {
 			System.out.println("Place your bets.");
 			playersPlaceBets();
 			dealer.dealCards(allPlayers);
@@ -47,10 +51,41 @@ public class BlackjackApp {
 
 		farewell();
 	}
-
+	
+	private BlackjackDealer addDealer() {
+		BlackjackDealer dealer = new BlackjackDealer("Frank", 1000);
+		return dealer;
+	}
+	
+	private List<BlackjackPlayer> getPlayers(String fileName) {
+		allPlayers = new ArrayList<BlackjackPlayer>();
+		
+		try (BufferedReader bufIn = new BufferedReader(new FileReader(fileName))) {
+			String line;
+			while ((line = bufIn.readLine()) != null) {
+				String[] player = line.split(", ");
+				String name = player[0];
+				int bank = Integer.parseInt(player[1]);
+				BlackjackPlayer newPlayer = new BlackjackPlayer(name, bank);
+				allPlayers.add(newPlayer);
+			}
+		} catch (FileNotFoundException notFound) {
+			System.err.println("");
+		} catch (IOException e) {
+			System.err.println("Error reading from " + fileName + ": " + e.getMessage());
+		}
+		
+		if (allPlayers.size() == 0) {
+			BlackjackPlayer player1 = new BlackjackPlayer("Jacob", 1000);
+			allPlayers.add(player1);
+		}
+		
+		return allPlayers;	
+	}
+	
 	private void playersPlaceBets() {
 		for (CardPlayer cardPlayer : allPlayers) {
-			System.out.print("How much would you like to bet?\n$>");
+			System.out.print(cardPlayer.getName() + " how much would you like to bet?\n$>");
 			int betAmt = 0;
 			try {
 				betAmt = kb.nextInt();
@@ -92,34 +127,43 @@ public class BlackjackApp {
 	}
 
 	private void keepPlaying() {
-		System.out.print("Type yes if you would like to keep playing?\n$>");
-		for (BlackjackPlayer blackjackPlayer : allPlayers) {
-			boolean validEntry = false;
+		boolean validEntry = false;
+		boolean playerLeaving = false;
+		for (int player = 0; player < allPlayers.size(); player++) {
 			while (!validEntry) {
+				System.out.print(allPlayers.get(player).getName() + " type yes if you would like to keep playing?\n$>");
 				String playerChoice = kb.nextLine().toUpperCase();
 				if (playerChoice.equals("YES") || playerChoice.equals("NO")) {
-					blackjackPlayer.playerCashOut(playerChoice);
+					playerLeaving = allPlayers.get(player).playerCashOut(playerChoice);
 					validEntry = true;
 				} else {
 					System.err.println("That is not a valid entry, please choose Yes or No");
 				}
+			}
+			if (playerLeaving == true) {
+				allPlayers.remove(allPlayers.get(player));
 			}
 		}
 	}
 
 	private boolean isPlayer() {
 		boolean playerAtTable = true;
-		for (BlackjackPlayer blackjackPlayer : allPlayers) {
-			playerAtTable = blackjackPlayer.playerCashOut("");
+		if (allPlayers.size() == 0) {
+			playerAtTable = false;
 		}
 		return playerAtTable;
 	}
 
 	private void greeting() {
-		System.out.println("Hello");
+		System.out.println("Hello\n");
+		System.out.println("Please welcome our player" + (allPlayers.size() == 1 ? "." : "s."));
+		for (BlackjackPlayer blackjackPlayer : allPlayers) {
+			System.out.println(blackjackPlayer.getName());
+		}
+		System.out.println();
 	}
 
 	private void farewell() {
-		System.out.println("Thank you for playing!");
+		System.out.println("\nThank you for playing!\n");
 	}
 }

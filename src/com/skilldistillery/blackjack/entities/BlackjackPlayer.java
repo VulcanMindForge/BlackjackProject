@@ -59,7 +59,7 @@ public boolean playerStands(String stand) {
 
 public boolean playerCashOut(String keepPlaying) {
 	boolean cashOut = false;
-	if (keepPlaying.equals("No")) {
+	if (keepPlaying.equals("NO")) {
 		cashOut = true;
 	}
 	return cashOut;

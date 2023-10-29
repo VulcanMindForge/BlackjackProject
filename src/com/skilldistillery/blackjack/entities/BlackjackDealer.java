@@ -84,9 +84,6 @@ public class BlackjackDealer extends CardPlayer {
 			deck.dealCardToHand(dealerHand);
 			displayDealerHand();
 		}
-		if (dealerHand.isBust()) {
-			System.out.println("Dealer busts.");
-		}
 		isDealerTurn = false;
 	}
 
@@ -94,23 +91,30 @@ public class BlackjackDealer extends CardPlayer {
 		for (BlackjackPlayer blackjackPlayer : players) {
 			if (blackjackPlayer.checkBlackJack()) {
 				if (dealerHand.isBlackjack()) {
+					System.out.println("Blackjack push, no winner.");
 					pushWin(blackjackPlayer);
 				} else {
 					System.out.println(blackjackPlayer.getName() + " wins with a BLACKJACK!");
 					blackjackPlayer.collectWinnings(blackjackPlayer.getBet() * 3);
 				}
 			} else if (dealerHand.isBlackjack()) {
+				System.out.println("Dealer has a Blackjack and no players have Blackjack, dealer wins.");
 				dealerWin(blackjackPlayer);
-			} else if (!dealerHand.isBust() && blackjackPlayer.checkBust()) {
+			} else if (blackjackPlayer.checkBust()) {
+				System.out.println("Player busts, dealer wins.");
 				dealerWin(blackjackPlayer);
 			} else if (!blackjackPlayer.checkBust() && dealerHand.isBust()) {
+				System.out.println("Dealer bust, " + blackjackPlayer.getName() + " wins.");
 				playerWin(blackjackPlayer);
 			} else {
 				if (dealerHand.getHandValue() > blackjackPlayer.getPlayerHand().getHandValue()) {
+					System.out.println("Dealer has high hand, dealer wins.");
 					dealerWin(blackjackPlayer);
 				} else if (dealerHand.getHandValue() == blackjackPlayer.getPlayerHand().getHandValue()) {
+					System.out.println("Push, no winner.");
 					pushWin(blackjackPlayer);
 				} else {
+					System.out.println(blackjackPlayer.getName() + " wins with the higher hand.");
 					playerWin(blackjackPlayer);
 				}
 			}
@@ -118,20 +122,17 @@ public class BlackjackDealer extends CardPlayer {
 	}
 
 	public void dealerWin(BlackjackPlayer player) {
-		System.out.println(player.getName() + " lost to the dealer " + getName());
 		System.out.println(player.getName() + " lost $" + player.getBet());
 		player.collectWinnings(getBet());
 	}
 
 	public void playerWin(BlackjackPlayer player) {
 		int winnings = player.getBet() * 2;
-		System.out.println(player.getName() + " wins.");
 		System.out.println(player.getName() + " won $" + winnings);
 		player.collectWinnings(winnings);
 	}
 
 	public void pushWin(BlackjackPlayer player) {
-		System.out.println(player.getName() + " tied with " + getName());
 		System.out.println(player.getName() + " broke even.");
 		player.collectWinnings(player.getBet());
 	}
